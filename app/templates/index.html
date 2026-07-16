@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="@cosme 주간 K-뷰티 인기 제품과 인스타그램 썸네일 스튜디오" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ asset_prefix }}/styles.css" />
+    <script defer src="{{ asset_prefix }}/app.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand-mark" href="/" aria-label="K-Beauty Pulse 홈">
+          <span class="brand-dot"></span>
+          <span>K-BEAUTY PULSE</span>
+        </a>
+        <div class="topbar-right">
+          <span class="live-pill"><span class="live-dot"></span> LIVE SOURCE</span>
+          <button id="refresh-button" class="refresh-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5"/></svg>
+            <span>새로고침</span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div>
+            <p class="eyebrow">@COSME · WEEKLY K-BEAUTY PICKS</p>
+            <h1>이번 주, 일본이<br /><em>고른 K-뷰티.</em></h1>
+          </div>
+          <div class="hero-copy">
+            <p>@cosme의 최신 한국 코스메 TOP 50에서 5개 카테고리별 인기 제품을 골라 인스타그램 콘텐츠로 만듭니다.</p>
+            <div class="time-block">
+              <span>SEOUL</span>
+              <strong id="live-clock">--:--:--</strong>
+              <small id="live-date">----</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="시장 현황">
+          <article class="metric-card market-card">
+            <div class="card-label"><span>01</span> 시장 현황</div>
+            <div class="market-status">
+              <span class="status-orb"></span>
+              <strong id="market-state">연결 중</strong>
+            </div>
+            <p id="market-detail">주간 TOP 50을 카테고리별로 분석하고 있습니다.</p>
+            <div class="market-mini-grid">
+              <div><small>5 PICKS 평균 평점</small><b id="average-rating">—</b></div>
+              <div><small>누적 리뷰</small><b id="total-reviews">—</b></div>
+            </div>
+          </article>
+
+          <article class="metric-card category-card">
+            <div class="card-label"><span>02</span> 이번 주 콘텐츠</div>
+            <div class="category-visual" aria-hidden="true">
+              <span class="ring ring-one"></span><span class="ring ring-two"></span><span class="ring ring-three"></span>
+            </div>
+            <strong id="leading-category">5 CATEGORY</strong>
+            <p>카테고리별 <b id="leading-count">—</b>개 대표 상품</p>
+          </article>
+
+          <article class="metric-card exchange-card">
+            <div class="card-label"><span>03</span> 원 · 엔 기준환율</div>
+            <div class="exchange-value">
+              <small>₩ 100</small>
+              <strong id="exchange-rate">—</strong>
+              <small>JPY</small>
+            </div>
+            <div class="exchange-meta">
+              <span id="exchange-date">기준일 —</span>
+              <span>중앙은행 기준</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="ranking-section weekly-section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">SOCIAL CONTENT STUDIO</p>
+              <h2>주간 인기 제품 <em>5 PICKS</em></h2>
+            </div>
+            <div class="source-meta">
+              <span id="ranking-updated">원본 갱신 —</span>
+              <span id="ranking-period">집계기간 —</span>
+            </div>
+          </div>
+
+          <div id="loading-state" class="loading-state" aria-live="polite">
+            <span></span><span></span><span></span>
+            <p>카테고리별 주간 인기 제품을 불러오는 중입니다</p>
+          </div>
+          <div id="error-state" class="error-state" hidden>
+            <strong>데이터를 불러오지 못했습니다.</strong>
+            <p id="error-message">잠시 후 다시 시도해 주세요.</p>
+            <button type="button" id="retry-button">다시 시도</button>
+          </div>
+          <div id="weekly-grid" class="weekly-grid" aria-live="polite"></div>
+
+          <div class="ranking-footer">
+            <p id="scope-note">TOP 50에서 카테고리별 최상위 제품을 선정합니다.</p>
+            <a id="source-link" href="https://www.cosme.net/categories/pickup/1039/ranking/" target="_blank" rel="noopener noreferrer">
+              @cosme 원본 보기
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+            </a>
+          </div>
+
+          <div class="studio-note">
+            <div>
+              <span class="studio-index">EXPORT READY</span>
+              <h3>인스타그램 4:5 썸네일</h3>
+              <p>각 카드의 저장 버튼을 누르면 1080×1350 PNG로 제작됩니다. 현재 얼굴은 실제 인물이 아닌 가상 K-뷰티 뮤즈이며, 사용 권한이 있는 연예인 사진으로 교체할 수 있습니다.</p>
+              <div class="muse-controls">
+                <label class="muse-upload-button">
+                  권한 보유 얼굴로 교체
+                  <input id="muse-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+                </label>
+                <span id="muse-status">기본 가상 뮤즈 사용 중</span>
+              </div>
+            </div>
+            <div class="studio-size"><strong>1080</strong><span>×</span><strong>1350</strong><small>PNG</small></div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>K-BEAUTY PULSE</span>
+        <p>랭킹 © istyle Inc. · 비공식 데이터 대시보드 · <span id="collected-at">수집 시각 —</span></p>
+      </footer>
+    </div>
+  </body>
+</html>
