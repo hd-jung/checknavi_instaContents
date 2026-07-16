@@ -37,7 +37,10 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
-app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
+# Vercel serves ``public/`` from its CDN and intentionally omits that directory
+# from the Python function bundle. Mount it only for local development.
+if not os.getenv("VERCEL"):
+    app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 
