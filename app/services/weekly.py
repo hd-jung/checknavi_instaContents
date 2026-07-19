@@ -211,18 +211,21 @@ class WeeklyRankingService:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36",
             "Accept-Language": "ja,en;q=0.8",
         }
-        async with httpx.AsyncClient(headers=headers, timeout=18.0, follow_redirects=True) as client:
+        async with httpx.AsyncClient(headers=headers, timeout=25.0, follow_redirects=True) as client:
             responses = await asyncio.gather(
                 *[
                     client.get(SOURCE_URL, params={"page": page} if page > 1 else None)
                     for page in range(1, self.max_pages + 1)
-                ]
+                ],
+                return_exceptions=True,
             )
 
         rows: list[WeeklyPick] = []
         updated_date = "확인 불가"
         aggregation_period = "확인 불가"
         for page, response in enumerate(responses, start=1):
+            if isinstance(response, Exception):
+                continue
             response.raise_for_status()
             page_rows, page_updated, page_period = parse_weekly_page(response.text, page)
             rows.extend(page_rows)
