@@ -32,9 +32,9 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="K-Beauty Pulse",
-    description="@cosme 한국 색조화장품 랭킹 대시보드",
-    version="1.0.0",
+    title="Checknavi Beauty Intelligence",
+    description="한·일 K-뷰티 신호 분석과 콘텐츠 제작 워크스페이스",
+    version="2.0.0",
     lifespan=lifespan,
 )
 # Vercel serves ``public/`` from its CDN and intentionally omits that directory
@@ -95,7 +95,7 @@ async def dashboard_page(request: Request):
         request=request,
         name="index.html",
         context={
-            "page_title": "K-Beauty Pulse",
+            "page_title": "Checknavi Beauty Intelligence",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },
     )

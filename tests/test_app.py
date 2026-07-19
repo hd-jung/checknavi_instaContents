@@ -12,6 +12,9 @@ def test_local_dashboard_uses_mounted_static_assets():
     assert response.status_code == 200
     assert 'href="/static/styles.css"' in response.text
     assert 'src="/static/app.js"' in response.text
+    assert "Checknavi Beauty Intelligence" in response.text
+    assert 'data-view="rank"' in response.text
+    assert 'data-view="studio"' in response.text
     assert client.get("/static/app.js").status_code == 200
 
 
