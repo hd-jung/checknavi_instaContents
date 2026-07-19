@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 import httpx
 from bs4 import BeautifulSoup
 
+from app.data.fallback_weekly import FALLBACK_WEEKLY
 from app.services.cosme import (
     SOURCE_URL,
     _first_number,
@@ -112,6 +113,20 @@ class WeeklySnapshot:
     collected_at: str
     source_url: str
     cache_hit: bool = False
+    fallback: bool = False
+
+
+def fallback_weekly_snapshot() -> WeeklySnapshot:
+    """Return a bundled last known-good snapshot for upstream outages."""
+    return WeeklySnapshot(
+        picks=[WeeklyPick(**item) for item in FALLBACK_WEEKLY["picks"]],
+        updated_date=FALLBACK_WEEKLY["updated_date"],
+        aggregation_period=FALLBACK_WEEKLY["aggregation_period"],
+        collected_at=datetime.now(SEOUL).isoformat(timespec="seconds"),
+        source_url=SOURCE_URL,
+        cache_hit=True,
+        fallback=True,
+    )
 
 
 def classify_group(categories: list[str]) -> dict | None:
@@ -201,7 +216,7 @@ class WeeklyRankingService:
                 if self._cached:
                     self._cached.cache_hit = True
                     return self._cached
-                raise
+                snapshot = fallback_weekly_snapshot()
             self._cached = snapshot
             self._cached_at = time.monotonic()
             return snapshot

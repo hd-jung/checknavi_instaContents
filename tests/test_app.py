@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.services.weekly import WeeklyRankingService
 
 
 client = TestClient(app)
@@ -40,3 +41,21 @@ def test_vercel_dashboard_uses_public_root(monkeypatch):
     assert workspace.status_code == 200
     assert 'href="/workspace-styles.css"' in workspace.text
     assert 'src="/workspace-app.js"' in workspace.text
+
+
+def test_weekly_service_falls_back_when_cosme_is_unavailable(monkeypatch):
+    service = WeeklyRankingService()
+
+    async def fail_fetch():
+        raise TimeoutError("@cosme unavailable")
+
+    monkeypatch.setattr(service, "_fetch_snapshot", fail_fetch)
+
+    import asyncio
+
+    snapshot = asyncio.run(service.get_snapshot())
+
+    assert snapshot.fallback is True
+    assert snapshot.cache_hit is True
+    assert snapshot.updated_date == "2026/7/17"
+    assert len(snapshot.picks) == 5

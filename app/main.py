@@ -48,13 +48,13 @@ def build_dashboard(snapshot: WeeklySnapshot, exchange: ExchangeRate) -> dict:
     picks = snapshot.picks
     avg_rating = sum(product.rating for product in picks) / len(picks)
     total_reviews = sum(product.reviews for product in picks)
-    source_mode = "cached" if snapshot.cache_hit else "live"
+    source_mode = "fallback" if snapshot.fallback else ("cached" if snapshot.cache_hit else "live")
 
     return {
         "status": "ok",
         "server_time": datetime.now(SEOUL).isoformat(timespec="seconds"),
         "market": {
-            "state": "수집 정상",
+            "state": "최근 정상 데이터" if snapshot.fallback else "수집 정상",
             "source_mode": source_mode,
             "analyzed_count": 50,
             "visible_count": len(picks),
@@ -69,7 +69,11 @@ def build_dashboard(snapshot: WeeklySnapshot, exchange: ExchangeRate) -> dict:
             "aggregation_period": snapshot.aggregation_period,
             "collected_at": snapshot.collected_at,
             "source_url": snapshot.source_url,
-            "scope_note": "@cosme 한국 코스메 주간 TOP 50에서 5개 카테고리별 최상위 상품을 자동 선정",
+            "scope_note": (
+                "@cosme 직접 수집이 지연되어 2026/7/17 마지막 정상 스냅샷을 표시 중"
+                if snapshot.fallback
+                else "@cosme 한국 코스메 주간 TOP 50에서 5개 카테고리별 최상위 상품을 자동 선정"
+            ),
             "muse_url": (
                 "/images/weekly-muse.png"
                 if os.getenv("VERCEL")
