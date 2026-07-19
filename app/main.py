@@ -95,6 +95,18 @@ async def dashboard_page(request: Request):
         request=request,
         name="index.html",
         context={
+            "page_title": "K-Beauty Pulse",
+            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/workspace", response_class=HTMLResponse)
+async def intelligence_workspace(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="workspace.html",
+        context={
             "page_title": "Checknavi Beauty Intelligence",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },

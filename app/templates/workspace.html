@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="한국과 일본의 K-뷰티 신호를 비교해 뉴스, 카드뉴스, 릴스와 광고 콘텐츠를 만드는 분석형 인플루언서 워크스페이스"
+    />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ asset_prefix }}/workspace-styles.css" />
+    <script defer src="{{ asset_prefix }}/workspace-app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Checknavi Beauty Intelligence 홈">
+          <span class="brand-symbol">C</span>
+          <span><b>CHECKNAVI</b><small>BEAUTY INTELLIGENCE</small></span>
+        </a>
+
+        <nav class="workspace-nav" aria-label="워크스페이스 메뉴">
+          <button class="nav-button is-active" type="button" data-view-target="overview">
+            <span>01</span> TODAY
+          </button>
+          <button class="nav-button" type="button" data-view-target="news">
+            <span>02</span> NEWS RADAR
+          </button>
+          <button class="nav-button" type="button" data-view-target="rank">
+            <span>03</span> RANK GAP
+          </button>
+          <button class="nav-button" type="button" data-view-target="lab">
+            <span>04</span> PRODUCT LAB
+          </button>
+          <button class="nav-button" type="button" data-view-target="studio">
+            <span>05</span> CONTENT STUDIO
+          </button>
+          <button class="nav-button" type="button" data-view-target="campaign">
+            <span>06</span> CAMPAIGN
+          </button>
+          <a class="workspace-return" href="/">← WEEKLY PICKS</a>
+        </nav>
+
+        <div class="sidebar-status">
+          <span class="status-dot"></span>
+          <div><b id="source-state">데이터 연결 중</b><small id="collected-at">수집 시각 —</small></div>
+        </div>
+      </aside>
+
+      <div class="workspace">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobile-menu" type="button" aria-label="메뉴 열기">☰</button>
+          <div>
+            <span class="topbar-label">JAPAN MARKET DESK</span>
+            <strong id="view-title">TODAY</strong>
+          </div>
+          <div class="topbar-actions">
+            <div class="clock">
+              <span>SEOUL</span>
+              <b id="live-clock">--:--</b>
+            </div>
+            <button id="refresh-button" class="primary-button compact" type="button">
+              <span class="refresh-mark">↻</span> 데이터 새로고침
+            </button>
+          </div>
+        </header>
+
+        <main>
+          <section class="view is-active" data-view="overview">
+            <div class="hero-grid">
+              <div class="hero-copy">
+                <p class="kicker">KOREA → JAPAN TREND DESK</p>
+                <h1>한국의 다음 뷰티를<br /><em>일본보다 먼저 읽는다.</em></h1>
+                <p class="hero-description">
+                  랭킹과 가격, 리뷰의 차이를 분석하고 일본 소비자용 콘텐츠와
+                  브랜드 광고 제안으로 연결하는 운영 워크스페이스입니다.
+                </p>
+                <div class="hero-actions">
+                  <button class="primary-button" type="button" data-jump="rank">이번 주 랭킹 분석</button>
+                  <button class="text-button" type="button" data-jump="studio">콘텐츠 바로 만들기 →</button>
+                </div>
+              </div>
+              <div class="hero-signal">
+                <span class="signal-label">THIS WEEK SIGNAL</span>
+                <strong id="hero-pick-count">—</strong>
+                <p>개의 일본 K-뷰티 카테고리 신호 수집</p>
+                <div class="signal-line"><span id="hero-average">—</span><small>평균 평점</small></div>
+                <div class="signal-line"><span id="hero-reviews">—</span><small>누적 리뷰</small></div>
+              </div>
+            </div>
+
+            <div class="metric-strip" aria-label="운영 현황">
+              <article>
+                <span>LIVE SOURCE</span>
+                <strong id="market-state">연결 중</strong>
+                <small id="market-detail">@cosme 데이터를 확인하고 있습니다.</small>
+              </article>
+              <article>
+                <span>READY TO CREATE</span>
+                <strong id="ready-content">0</strong>
+                <small>카드뉴스·릴스·영상 초안</small>
+              </article>
+              <article>
+                <span>KRW → JPY</span>
+                <strong id="exchange-rate">—</strong>
+                <small id="exchange-date">기준일 —</small>
+              </article>
+              <article>
+                <span>CAMPAIGNS</span>
+                <strong id="campaign-count">0</strong>
+                <small>이 기기에 저장된 광고 건</small>
+              </article>
+            </div>
+
+            <div class="section-heading">
+              <div>
+                <p class="kicker">PIPELINE STATUS</p>
+                <h2>오늘의 데이터 파이프라인</h2>
+              </div>
+              <span id="live-date" class="date-chip">—</span>
+            </div>
+
+            <div class="pipeline-grid">
+              <article class="pipeline-card is-live">
+                <span class="pipeline-index">01</span>
+                <div><b>@cosme Ranking</b><small>일본 K-뷰티 TOP 50 · 자동 수집</small></div>
+                <strong>LIVE</strong>
+              </article>
+              <article class="pipeline-card is-manual">
+                <span class="pipeline-index">02</span>
+                <div><b>Olive Young Ranking</b><small>카테고리별 CSV · 수동 불러오기</small></div>
+                <strong>IMPORT</strong>
+              </article>
+              <article class="pipeline-card is-ready">
+                <span class="pipeline-index">03</span>
+                <div><b>News Radar</b><small>신상·연예인·앰배서더·세일 초안</small></div>
+                <strong>DESK</strong>
+              </article>
+              <article class="pipeline-card is-live">
+                <span class="pipeline-index">04</span>
+                <div><b>KRW / JPY</b><small>현재 환율 · 가격 비교 기준</small></div>
+                <strong>LIVE</strong>
+              </article>
+            </div>
+
+            <div class="dashboard-split">
+              <section class="panel">
+                <div class="panel-heading">
+                  <div><p class="kicker">EDITORIAL QUEUE</p><h3>지금 만들 콘텐츠</h3></div>
+                  <button class="text-button" type="button" data-jump="studio">스튜디오 열기 →</button>
+                </div>
+                <div id="editorial-queue" class="editorial-queue">
+                  <div class="loading-line">실시간 랭킹에서 제작 후보를 고르는 중입니다.</div>
+                </div>
+              </section>
+
+              <section class="panel dark-panel">
+                <div class="panel-heading">
+                  <div><p class="kicker">POSITIONING</p><h3>광고주에게 보여줄 관점</h3></div>
+                </div>
+                <ol class="position-list">
+                  <li><span>01</span><p><b>한국에서 먼저 뜬다</b>신제품과 급상승 신호를 일본에 먼저 전달</p></li>
+                  <li><span>02</span><p><b>가격 차이를 계산한다</b>현재 환율과 할인율로 구매 타이밍 제안</p></li>
+                  <li><span>03</span><p><b>근거를 남긴다</b>순위·리뷰·출처·수집 시각이 보이는 콘텐츠</p></li>
+                </ol>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="news" hidden>
+            <div class="page-heading">
+              <div><p class="kicker">EDITORIAL INPUT</p><h1>NEWS <em>RADAR</em></h1></div>
+              <p>뉴스 URL과 제목을 저장하면 카드뉴스와 영상 대본으로 이어질 편집 초안을 만듭니다.</p>
+            </div>
+
+            <div class="radar-grid">
+              <article><span>01</span><b>신상 발매</b><p>브랜드 공식 발표와 판매처 출시 페이지를 우선 수집</p></article>
+              <article><span>02</span><b>연예인 사용</b><p>방송·SNS 원본 확인과 이미지 권한 확인이 필요한 큐</p></article>
+              <article><span>03</span><b>앰배서더</b><p>브랜드 공식 채널 발표를 기반으로 관계와 의미 분석</p></article>
+              <article><span>04</span><b>세일 캘린더</b><p>올리브영·로드숍 공식 일정을 구매 타이밍으로 변환</p></article>
+            </div>
+
+            <div class="dashboard-split input-split">
+              <form id="news-form" class="panel form-panel">
+                <div class="panel-heading"><div><p class="kicker">ADD SIGNAL</p><h3>뉴스 초안 추가</h3></div></div>
+                <label>콘텐츠 유형
+                  <select id="news-type">
+                    <option value="신상 발매">신상 발매</option>
+                    <option value="연예인 사용">연예인 사용</option>
+                    <option value="앰배서더">앰배서더</option>
+                    <option value="세일 일정">세일 일정</option>
+                  </select>
+                </label>
+                <label>제목<input id="news-title" type="text" placeholder="예: 성수에서 먼저 공개된 신제품" required /></label>
+                <label>원본 URL<input id="news-url" type="url" placeholder="https://..." required /></label>
+                <button class="primary-button" type="submit">편집 큐에 추가</button>
+              </form>
+              <section class="panel">
+                <div class="panel-heading">
+                  <div><p class="kicker">DRAFT QUEUE</p><h3>뉴스 제작 대기</h3></div>
+                  <span id="news-count" class="count-chip">0</span>
+                </div>
+                <div id="news-queue" class="news-queue empty-state">아직 추가한 뉴스가 없습니다.</div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="rank" hidden>
+            <div class="page-heading">
+              <div><p class="kicker">KOREA vs JAPAN</p><h1>RANK <em>GAP</em></h1></div>
+              <p>일본 @cosme 순위와 한국 올리브영 데이터를 같은 카테고리에서 비교합니다.</p>
+            </div>
+
+            <div class="import-bar">
+              <div>
+                <b>올리브영 랭킹 불러오기</b>
+                <small>CSV 열: category, rank, brand, name, price_krw, rating, reviews, seller</small>
+              </div>
+              <label class="file-button">CSV 선택<input id="oliveyoung-upload" type="file" accept=".csv,text/csv" hidden /></label>
+              <button id="download-sample" class="ghost-button" type="button">샘플 CSV</button>
+              <span id="oliveyoung-status">미연결</span>
+            </div>
+
+            <div id="rank-filters" class="filter-row" aria-label="랭킹 카테고리"></div>
+            <div id="loading-state" class="loading-state" aria-live="polite">랭킹 데이터를 불러오는 중입니다.</div>
+            <div id="error-state" class="error-state" hidden>
+              <strong>데이터를 불러오지 못했습니다.</strong>
+              <p id="error-message">잠시 후 다시 시도해 주세요.</p>
+              <button type="button" id="retry-button">다시 시도</button>
+            </div>
+            <div id="rank-gap-grid" class="rank-gap-grid"></div>
+
+            <div class="source-footer">
+              <p id="scope-note">@cosme TOP 50에서 카테고리별 최상위 제품을 선정합니다.</p>
+              <a id="source-link" href="https://www.cosme.net/categories/pickup/1039/ranking/" target="_blank" rel="noopener noreferrer">원본 데이터 보기 ↗</a>
+            </div>
+          </section>
+
+          <section class="view" data-view="lab" hidden>
+            <div class="page-heading">
+              <div><p class="kicker">PRODUCT DEEP DIVE</p><h1>PRODUCT <em>LAB</em></h1></div>
+              <p>가격·성분·성능을 광고 문구가 아닌 비교 근거로 정리합니다.</p>
+            </div>
+
+            <div class="lab-layout">
+              <section class="panel lab-product">
+                <label>분석 제품<select id="lab-product-select"></select></label>
+                <div id="lab-product-preview" class="lab-product-preview"></div>
+              </section>
+              <form id="lab-form" class="panel form-panel">
+                <div class="panel-heading"><div><p class="kicker">ANALYSIS NOTES</p><h3>성분·성능 메모</h3></div></div>
+                <label>주요 성분<textarea id="lab-ingredients" rows="3" placeholder="예: 나이아신아마이드, 판테놀"></textarea></label>
+                <label>핵심 성능<textarea id="lab-performance" rows="3" placeholder="예: 얇은 밀착력, 붉은기 보정"></textarea></label>
+                <label>일본 소비자 관점<textarea id="lab-angle" rows="3" placeholder="예: 습한 계절에 수정 화장이 쉬운 타입"></textarea></label>
+                <button class="primary-button" type="submit">분석 초안 만들기</button>
+              </form>
+              <section class="panel analysis-output">
+                <div class="panel-heading"><div><p class="kicker">EDITORIAL DRAFT</p><h3>분석 결과</h3></div></div>
+                <div id="lab-output" class="draft-paper empty-state">제품과 메모를 입력하면 분석 초안이 생성됩니다.</div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="studio" hidden>
+            <div class="page-heading">
+              <div><p class="kicker">MULTI FORMAT OUTPUT</p><h1>CONTENT <em>STUDIO</em></h1></div>
+              <p>하나의 분석을 카드뉴스, 릴스, 유튜브용 제목과 대본으로 변환합니다.</p>
+            </div>
+
+            <div class="studio-layout">
+              <form id="studio-form" class="studio-controls">
+                <label>제품<select id="studio-product"></select></label>
+                <label>포맷
+                  <select id="studio-format">
+                    <option value="carousel">Instagram 4:5 카드뉴스</option>
+                    <option value="reel">Reels 9:16</option>
+                    <option value="youtube">YouTube 16:9</option>
+                  </select>
+                </label>
+                <label>분석 각도
+                  <select id="studio-angle">
+                    <option value="trend">한국에서 먼저 뜨는 다음 제품</option>
+                    <option value="price">환율·할인 구매 타이밍</option>
+                    <option value="performance">성분·성능 비교</option>
+                  </select>
+                </label>
+                <label class="toggle-label">
+                  <input id="sponsor-toggle" type="checkbox" />
+                  <span>광고·협찬 콘텐츠</span>
+                </label>
+                <label id="sponsor-field" hidden>광고주 또는 브랜드<input id="sponsor-name" type="text" placeholder="브랜드명" /></label>
+                <label class="file-button wide">권한 보유 인물 이미지 교체<input id="muse-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden /></label>
+                <small id="muse-status">기본 가상 뮤즈 사용 중</small>
+                <button class="primary-button" type="submit">콘텐츠 초안 생성</button>
+              </form>
+
+              <section class="studio-preview">
+                <div id="content-canvas-preview" class="canvas-preview">
+                  <span class="preview-label">EDITORIAL PREVIEW</span>
+                  <p>제품을 선택하고 초안을 생성하세요.</p>
+                </div>
+                <div class="preview-actions">
+                  <button id="export-content" class="primary-button" type="button" disabled>이미지 저장</button>
+                  <button id="copy-draft" class="ghost-button" type="button" disabled>문구 복사</button>
+                </div>
+              </section>
+
+              <section class="studio-draft panel">
+                <div class="panel-heading"><div><p class="kicker">SCRIPT & CAPTION</p><h3>일본어 제작 초안</h3></div></div>
+                <div id="studio-output" class="draft-paper empty-state">생성된 제목, 후킹 문구, 구성과 캡션이 여기에 표시됩니다.</div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="campaign" hidden>
+            <div class="page-heading">
+              <div><p class="kicker">SPONSORSHIP DESK</p><h1>CAMPAIGN <em>BOARD</em></h1></div>
+              <p>광고 제안부터 납기와 게시 상태까지 이 기기에서 간단히 관리합니다.</p>
+            </div>
+
+            <div class="dashboard-split input-split">
+              <form id="campaign-form" class="panel form-panel">
+                <div class="panel-heading"><div><p class="kicker">NEW CAMPAIGN</p><h3>광고 건 추가</h3></div></div>
+                <label>브랜드<input id="campaign-brand" type="text" required placeholder="브랜드명" /></label>
+                <label>제작물
+                  <select id="campaign-deliverable">
+                    <option>카드뉴스</option>
+                    <option>릴스</option>
+                    <option>유튜브 영상</option>
+                    <option>통합 패키지</option>
+                  </select>
+                </label>
+                <label>마감일<input id="campaign-deadline" type="date" required /></label>
+                <button class="primary-button" type="submit">캠페인 추가</button>
+                <small>캠페인 정보는 현재 브라우저에만 저장됩니다.</small>
+              </form>
+
+              <section class="panel">
+                <div class="panel-heading">
+                  <div><p class="kicker">ACTIVE WORK</p><h3>광고 진행 현황</h3></div>
+                  <span id="campaign-board-count" class="count-chip">0</span>
+                </div>
+                <div id="campaign-board" class="campaign-board empty-state">등록된 캠페인이 없습니다.</div>
+              </section>
+            </div>
+          </section>
+        </main>
+
+        <footer>
+          <span>CHECKNAVI BEAUTY INTELLIGENCE</span>
+          <p>Editorial workspace · 광고 콘텐츠는 Paid Partnership 표시와 자산 사용 권한을 확인하세요.</p>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
