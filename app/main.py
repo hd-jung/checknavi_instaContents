@@ -14,6 +14,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from app.data.fallback_intelligence import KOREA_REFERENCE_PICKS
 from app.models import ExchangeRate
 from app.services.exchange import (
     FALLBACK_RATE_DATE,
@@ -55,6 +56,7 @@ app = FastAPI(
 if not os.getenv("VERCEL"):
     app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
+VALID_PRODUCT_IDS = {item["category_key"] for item in KOREA_REFERENCE_PICKS}
 
 
 def build_dashboard(snapshot: WeeklySnapshot, exchange: ExchangeRate) -> dict:
@@ -149,6 +151,45 @@ async def trend_gap_page(request: Request):
         name="trend-gap.html",
         context={
             "page_title": "Korea Next / Japan Now · Checknavi",
+            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/opportunities", response_class=HTMLResponse)
+async def opportunity_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="opportunities.html",
+        context={
+            "page_title": "광고 후보 TOP 5 · Checknavi",
+            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/products/{product_id}", response_class=HTMLResponse)
+async def product_detail_page(request: Request, product_id: str):
+    if product_id not in VALID_PRODUCT_IDS:
+        raise HTTPException(status_code=404, detail="분석 제품을 찾지 못했습니다.")
+    return templates.TemplateResponse(
+        request=request,
+        name="product-detail.html",
+        context={
+            "page_title": "제품 상세 분석 · Checknavi",
+            "product_id": product_id,
+            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/content-studio", response_class=HTMLResponse)
+async def content_studio_coming_soon(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="content-studio-coming-soon.html",
+        context={
+            "page_title": "카드뉴스 제작 · Coming Soon",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },
     )

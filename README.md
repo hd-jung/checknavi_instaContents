@@ -3,7 +3,10 @@
 한국과 일본의 K-뷰티 시장 신호를 비교해 뉴스, 제품 분석, 카드뉴스, 릴스와 유튜브 콘텐츠 초안으로 연결하는 FastAPI 기반 운영 워크스페이스입니다.
 
 - `/`: 기존 @cosme 주간 랭킹·인스타그램 썸네일 페이지
-- `/trend-gap`: @cosme와 Olive Young을 비교하는 일본 진출 기회 TOP 5 분석
+- `/trend-gap`: @cosme와 Olive Young의 카테고리별 한·일 랭킹 비교
+- `/opportunities`: 일본 진출 광고 제안 후보 TOP 5
+- `/products/{category}`: 후보 제품별 가격·성분·성능 상세 분석
+- `/content-studio`: 카드뉴스 자동 제작 준비 화면(COMING SOON)
 - `/releases`: 표지 1장과 신제품 5장으로 구성된 인스타그램 카드뉴스 제작기
 - `/workspace`: 분석형 인플루언서 운영 워크스페이스
 
@@ -16,7 +19,9 @@
 - `CONTENT STUDIO`: 일본어 제목·후킹·구성과 4:5·9:16·16:9 이미지 출력
 - `CAMPAIGN`: 광고 제안, 제작물, 마감일과 진행 상태 관리
 - `NEW DROP STUDIO`: @cosme 신제품 캘린더, 상품 정보와 환율을 결합해 1080×1350 PNG 6장 생성
-- `TREND GAP DESK`: 일본 현재 인기와 한국 다음 후보의 가격·리뷰·성분·효능 비교 및 광고 기회 TOP 5
+- `TREND GAP`: 일본 현재 인기와 한국 다음 후보의 카테고리별 비교
+- `AD TOP 5`: 광고 제안 후보를 우선순위별로 확인
+- `PRODUCT DETAIL`: 후보 제품별 가격·성분·성능·일본 비교 제품 확인
 
 뉴스와 캠페인, 올리브영 CSV 데이터는 현재 사용 중인 브라우저에만 저장됩니다.
 

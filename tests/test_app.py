@@ -40,16 +40,35 @@ def test_release_studio_keeps_existing_pages_and_adds_six_card_workflow():
     assert client.get("/static/releases.js").status_code == 200
 
 
-def test_trend_gap_is_a_separate_analysis_page_with_card_news_coming_soon():
+def test_trend_gap_only_contains_market_comparison():
     response = client.get("/trend-gap")
 
     assert response.status_code == 200
     assert 'href="/static/trend-gap.css"' in response.text
     assert 'src="/static/trend-gap.js"' in response.text
-    assert "일본의 현재와" in response.text
-    assert "TOP 5" in response.text
-    assert "COMING" in response.text
+    assert "한·일 랭킹" in response.text
+    assert 'href="/opportunities"' in response.text
+    assert "COMING<br" not in response.text
     assert client.get("/static/trend-gap.js").status_code == 200
+
+
+def test_opportunity_product_and_coming_soon_are_separate_pages():
+    opportunities = client.get("/opportunities")
+    product = client.get("/products/skincare")
+    content = client.get("/content-studio")
+
+    assert opportunities.status_code == 200
+    assert "광고 제안 후보" in opportunities.text
+    assert 'src="/static/opportunities.js"' in opportunities.text
+    assert client.get("/static/opportunities.js").status_code == 200
+    assert product.status_code == 200
+    assert 'data-product-id="skincare"' in product.text
+    assert 'src="/static/product-detail.js"' in product.text
+    assert client.get("/static/product-detail.js").status_code == 200
+    assert client.get("/products/not-a-product").status_code == 404
+    assert content.status_code == 200
+    assert "COMING" in content.text
+    assert "아직 연결하지 않았습니다" in content.text
 
 
 def test_trend_gap_api_returns_five_comparisons_and_honest_source_state():
@@ -92,9 +111,17 @@ def test_vercel_dashboard_uses_public_root(monkeypatch):
     assert 'href="/releases.css"' in releases.text
     assert 'src="/releases.js"' in releases.text
     trend_gap = client.get("/trend-gap")
+    opportunities = client.get("/opportunities")
+    product = client.get("/products/color")
+    content = client.get("/content-studio")
     assert trend_gap.status_code == 200
     assert 'href="/trend-gap.css"' in trend_gap.text
     assert 'src="/trend-gap.js"' in trend_gap.text
+    assert opportunities.status_code == 200
+    assert 'src="/opportunities.js"' in opportunities.text
+    assert product.status_code == 200
+    assert 'src="/product-detail.js"' in product.text
+    assert content.status_code == 200
 
 
 def test_weekly_service_falls_back_when_cosme_is_unavailable(monkeypatch):

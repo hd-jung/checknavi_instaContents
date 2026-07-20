@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="K-뷰티 광고 후보 제품의 가격·성분·성능 상세 분석" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ asset_prefix }}/trend-gap.css" />
+    <script defer src="{{ asset_prefix }}/product-detail.js"></script>
+  </head>
+  <body data-page="product" data-product-id="{{ product_id }}">
+    <header class="site-header">
+      <a class="wordmark" href="/trend-gap">
+        <span>CHECKNAVI</span><b>MARKET INTELLIGENCE</b>
+      </a>
+      <nav aria-label="분석 페이지 이동">
+        <a href="/trend-gap">랭킹 비교</a>
+        <a class="active" href="/opportunities">광고 후보 TOP 5</a>
+        <a href="/content-studio">카드뉴스</a>
+      </nav>
+      <div class="header-tools">
+        <a class="header-back" href="/opportunities">← TOP 5</a>
+      </div>
+    </header>
+
+    <main>
+      <div id="loading-state" class="state-panel">
+        <span class="loading-bar"></span><b>제품 분석을 불러오고 있습니다.</b>
+      </div>
+      <div id="error-state" class="state-panel error" hidden>
+        <b>제품을 찾지 못했습니다.</b>
+        <p id="error-message">TOP 5 목록에서 다시 선택해 주세요.</p>
+        <a href="/opportunities">TOP 5로 돌아가기</a>
+      </div>
+
+      <article id="product-content" class="product-detail-page" hidden>
+        <section class="product-detail-hero">
+          <div class="detail-rank">
+            <span id="product-position">—</span>
+            <small>OPPORTUNITY<br />RANK</small>
+          </div>
+          <div class="detail-image"><img id="product-image" alt="" /></div>
+          <div class="detail-title">
+            <p id="product-category" class="kicker">CATEGORY</p>
+            <span id="product-brand">BRAND</span>
+            <h1 id="product-name">제품명</h1>
+            <div class="detail-score"><b id="product-score">—</b><span>/ 100<br />기회점수</span></div>
+          </div>
+        </section>
+
+        <section class="detail-grid">
+          <article class="detail-block price-block">
+            <span>01 · PRICE</span>
+            <h2>가격 비교</h2>
+            <div id="price-table" class="detail-table"></div>
+            <div id="buy-signal" class="buy-signal"></div>
+          </article>
+          <article class="detail-block performance-block">
+            <span>02 · PERFORMANCE</span>
+            <h2>성분과 성능</h2>
+            <div id="performance-tags" class="tag-list dark-tags"></div>
+            <p id="appeal-copy"></p>
+          </article>
+          <article class="detail-block proof-block">
+            <span>03 · PROOF</span>
+            <h2>판매·리뷰·뉴스</h2>
+            <dl id="proof-list"></dl>
+          </article>
+          <article class="detail-block counterpart-block">
+            <span>04 · JAPAN NOW</span>
+            <h2>일본 비교 제품</h2>
+            <div id="counterpart"></div>
+          </article>
+        </section>
+
+        <section class="detail-action">
+          <div>
+            <span>NEXT</span>
+            <h2>이 제품으로<br />콘텐츠를 만들까요?</h2>
+          </div>
+          <a href="/content-studio">카드뉴스 페이지 보기 →</a>
+        </section>
+      </article>
+    </main>
+
+    <footer>
+      <b>CHECKNAVI · PAGE 03 / 04</b>
+      <p>제품별 가격·성분·성능·일본 비교 근거를 분리해 확인합니다.</p>
+    </footer>
+  </body>
+</html>
