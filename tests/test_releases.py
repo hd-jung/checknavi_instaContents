@@ -11,22 +11,21 @@ def test_calendar_parser_finds_korean_brand_products():
     html = """
     <section>
       <h3>7月28日 (火)</h3>
-      <div>
-        <h4>TIRTIR</h4>
-        <a href="/products/10300246/">TIRTIRハイドラヴェール セラムパウダー</a>
-      </div>
-      <div>
-        <h4>日本ブランド</h4>
-        <a href="/products/10000000/">対象外</a>
-      </div>
+      <h4>TIRTIR</h4>
+      <a href="/products/10300246/">TIRTIRハイドラヴェール セラムパウダー</a>
+      <a href="https://www.cosme.com/item/123">購入サイトへ</a>
+      <h4>日本ブランド</h4>
+      <a href="/products/10000000/">対象外</a>
+      <h4>MISSHA</h4>
+      <a href="/products/10300400/">ミシャ新商品</a>
     </section>
     """
 
     rows = parse_calendar_candidates(html, 2026, 7)
 
-    assert len(rows) == 1
-    assert rows[0]["brand"] == "TIRTIR"
-    assert rows[0]["release_date"] == "2026-07-28"
+    assert len(rows) == 2
+    assert [row["brand"] for row in rows] == ["TIRTIR", "MISSHA"]
+    assert all(row["release_date"] == "2026-07-28" for row in rows)
     assert rows[0]["product_url"].endswith("/products/10300246/")
 
 

@@ -93,8 +93,14 @@ def parse_calendar_candidates(html: str, year: int, month: int) -> list[dict]:
             if date_match
             else f"{year:04d}-{month:02d}-01"
         )
-        container = heading.parent
-        anchors = container.find_all("a", href=True) if container else []
+        anchors = []
+        node = heading.find_next()
+        while node is not None:
+            if getattr(node, "name", None) in {"h3", "h4"}:
+                break
+            if getattr(node, "name", None) == "a" and node.get("href"):
+                anchors.append(node)
+            node = node.find_next()
         for anchor in anchors:
             href = str(anchor.get("href", ""))
             if not re.search(r"/products?/\d+", href) or href in seen:
