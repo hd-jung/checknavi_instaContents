@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.main import app, weekly_service
 from app.services.weekly import WeeklyRankingService
 
 
@@ -62,6 +62,17 @@ def test_trend_gap_api_returns_five_comparisons_and_honest_source_state():
     assert data["sources"]["korea"]["mode"] == "reference_snapshot"
     assert data["top5"][0]["price_analysis"]["default_threshold"] == 20
     assert all("reviews_status" in row["korea"] for row in data["comparisons"])
+
+
+def test_trend_gap_default_load_does_not_wait_for_cosme(monkeypatch):
+    async def fail_if_called(*args, **kwargs):
+        raise AssertionError("default trend-gap load should not crawl @cosme")
+
+    monkeypatch.setattr(weekly_service, "get_snapshot", fail_if_called)
+    response = client.get("/api/trend-gap")
+
+    assert response.status_code == 200
+    assert response.json()["sources"]["japan"]["mode"] == "fallback"
 
 
 def test_vercel_dashboard_uses_public_root(monkeypatch):

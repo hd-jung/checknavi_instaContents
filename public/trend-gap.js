@@ -229,17 +229,23 @@ async function loadData(force = false) {
   if (!state.data) $("#loading-state").hidden = false;
   $("#error-state").hidden = true;
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
     const response = await fetch(`/api/trend-gap${force ? "?refresh=true" : ""}`, {
       headers: { Accept: "application/json" },
       cache: "no-store",
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
     const data = await response.json();
     if (!response.ok) throw new Error(data?.detail?.message || "서버 응답 오류");
     renderDashboard(data);
   } catch (error) {
     $("#loading-state").hidden = true;
     $("#error-state").hidden = false;
-    $("#error-message").textContent = error.message || "잠시 후 다시 시도해 주세요.";
+    $("#error-message").textContent = error.name === "AbortError"
+      ? "데이터 연결이 지연되고 있습니다. 다시 시도하면 검증 스냅샷으로 즉시 전환됩니다."
+      : (error.message || "잠시 후 다시 시도해 주세요.");
   } finally {
     state.loading = false;
     button.disabled = false;

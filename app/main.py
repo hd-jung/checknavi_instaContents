@@ -15,10 +15,19 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.models import ExchangeRate
-from app.services.exchange import ExchangeRateService
+from app.services.exchange import (
+    FALLBACK_RATE_DATE,
+    FALLBACK_RATE_PER_100_KRW,
+    SOURCE_URL as EXCHANGE_SOURCE_URL,
+    ExchangeRateService,
+)
 from app.services.intelligence import build_market_intelligence
 from app.services.releases import ReleaseService
-from app.services.weekly import WeeklyRankingService, WeeklySnapshot
+from app.services.weekly import (
+    WeeklyRankingService,
+    WeeklySnapshot,
+    fallback_weekly_snapshot,
+)
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -147,10 +156,36 @@ async def trend_gap_page(request: Request):
 
 @app.get("/api/trend-gap")
 async def trend_gap_data(refresh: bool = Query(False)):
-    snapshot, exchange = await asyncio.gather(
-        weekly_service.get_snapshot(force=refresh),
-        exchange_service.get_rate(force=refresh),
+    # A Vercel cold start must not block the whole page on upstream crawling.
+    # The regular page load uses a verified snapshot and a short FX lookup;
+    # explicit refresh is the only path that attempts a live @cosme crawl.
+    snapshot = fallback_weekly_snapshot()
+    exchange = ExchangeRate(
+        rate_per_100_krw=FALLBACK_RATE_PER_100_KRW,
+        as_of_date=FALLBACK_RATE_DATE,
+        collected_at=datetime.now(SEOUL).isoformat(timespec="seconds"),
+        source_url=EXCHANGE_SOURCE_URL,
+        cache_hit=True,
+        error="기준 환율 스냅샷",
     )
+    try:
+        if refresh:
+            snapshot, exchange = await asyncio.wait_for(
+                asyncio.gather(
+                    weekly_service.get_snapshot(force=True),
+                    exchange_service.get_rate(force=True),
+                ),
+                timeout=9.0,
+            )
+        else:
+            exchange = await asyncio.wait_for(
+                exchange_service.get_rate(),
+                timeout=3.0,
+            )
+    except Exception as exc:
+        exchange.error = (
+            f"외부 데이터 연결 지연으로 검증 스냅샷을 사용합니다: {type(exc).__name__}"
+        )
     return JSONResponse(
         content=build_market_intelligence(snapshot, exchange),
         headers={
