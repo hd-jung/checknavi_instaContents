@@ -201,7 +201,16 @@ class ReleaseService:
         async with httpx.AsyncClient(headers=headers, timeout=12.0, follow_redirects=True) as client:
             calendar_response = await client.get(source_url)
             calendar_response.raise_for_status()
-            candidates = parse_calendar_candidates(calendar_response.text, today.year, today.month)[:10]
+            candidates = []
+            seen_brands: set[str] = set()
+            for item in parse_calendar_candidates(calendar_response.text, today.year, today.month):
+                brand_key = re.sub(r"\([^)]*\)", "", item["brand"]).strip().lower()
+                if brand_key in seen_brands:
+                    continue
+                seen_brands.add(brand_key)
+                candidates.append(item)
+                if len(candidates) == 10:
+                    break
             if len(candidates) < 5:
                 raise RuntimeError("한국 브랜드 신제품 후보가 5개 미만입니다.")
             responses = await asyncio.gather(
