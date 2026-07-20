@@ -16,6 +16,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.models import ExchangeRate
 from app.services.exchange import ExchangeRateService
+from app.services.intelligence import build_market_intelligence
 from app.services.releases import ReleaseService
 from app.services.weekly import WeeklyRankingService, WeeklySnapshot
 
@@ -128,6 +129,37 @@ async def release_card_studio(request: Request):
         context={
             "page_title": "K-Beauty New Drop Studio",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/trend-gap", response_class=HTMLResponse)
+async def trend_gap_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="trend-gap.html",
+        context={
+            "page_title": "Korea Next / Japan Now · Checknavi",
+            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/api/trend-gap")
+async def trend_gap_data(refresh: bool = Query(False)):
+    snapshot, exchange = await asyncio.gather(
+        weekly_service.get_snapshot(force=refresh),
+        exchange_service.get_rate(force=refresh),
+    )
+    return JSONResponse(
+        content=build_market_intelligence(snapshot, exchange),
+        headers={
+            "Cache-Control": "no-store" if refresh else "public, max-age=60",
+            "Vercel-CDN-Cache-Control": (
+                "no-store"
+                if refresh
+                else "public, s-maxage=900, stale-while-revalidate=60"
+            ),
         },
     )
 

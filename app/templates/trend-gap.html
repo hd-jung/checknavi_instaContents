@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="@cosme와 Olive Young의 K-뷰티 랭킹을 비교해 일본 진출 기회 TOP 5를 찾는 시장 분석 대시보드"
+    />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ asset_prefix }}/trend-gap.css" />
+    <script defer src="{{ asset_prefix }}/trend-gap.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/trend-gap" aria-label="Trend Gap Desk 홈">
+        <span>CHECKNAVI</span>
+        <b>TREND GAP DESK</b>
+      </a>
+      <nav aria-label="페이지 이동">
+        <a href="/">WEEKLY</a>
+        <a href="/releases">NEW DROP</a>
+        <a href="/workspace">WORKSPACE</a>
+      </nav>
+      <div class="header-tools">
+        <span id="header-clock">--:--:-- KST</span>
+        <button id="refresh-button" type="button">데이터 갱신 ↻</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-main">
+          <p class="kicker">KOREA NEXT / JAPAN NOW</p>
+          <h1>일본의 현재와<br /><em>한국의 다음</em>을 비교합니다.</h1>
+          <p class="hero-copy">
+            익숙해진 일본 인기 제품과 한국의 다음 후보를 같은 카테고리 안에서 비교해,
+            한국 브랜드에 제안할 수 있는 일본 진출 근거를 찾습니다.
+          </p>
+        </div>
+        <div class="hero-brief">
+          <span>EDITORIAL PRINCIPLE 01</span>
+          <strong>“올드하다”가 아니라<br />“성숙했다”는 데이터로.</strong>
+          <p>랭크와 리뷰가 오래 축적된 제품은 일본 시장의 현재 취향입니다. 그 옆에 한국의 다른 제형·효능·피니시를 놓아 다음 수요를 제안합니다.</p>
+        </div>
+      </section>
+
+      <section class="source-strip" aria-label="데이터 수집 상태">
+        <article>
+          <span>JP SOURCE</span>
+          <b>@cosme</b>
+          <small id="jp-source-state">연결 중</small>
+        </article>
+        <article>
+          <span>KR SOURCE</span>
+          <b>OLIVE YOUNG</b>
+          <small id="kr-source-state">연결 중</small>
+        </article>
+        <article>
+          <span>FX / ₩100</span>
+          <b id="fx-rate">—</b>
+          <small id="fx-date">기준일 확인 중</small>
+        </article>
+        <article class="accent-source">
+          <span>OPPORTUNITY</span>
+          <b id="opportunity-average">—</b>
+          <small>TOP 5 평균 편집 점수</small>
+        </article>
+      </section>
+
+      <div id="loading-state" class="state-panel">
+        <span class="loading-bar"></span>
+        <b>한·일 랭킹과 환율을 맞추고 있습니다.</b>
+      </div>
+      <div id="error-state" class="state-panel error" hidden>
+        <b>데이터를 불러오지 못했습니다.</b>
+        <p id="error-message">잠시 후 다시 시도해 주세요.</p>
+        <button id="retry-button" type="button">다시 시도</button>
+      </div>
+
+      <section id="dashboard-content" hidden>
+        <section class="comparison-section">
+          <div class="section-heading">
+            <div>
+              <p class="kicker">01 · CATEGORY RANKING GAP</p>
+              <h2>같은 카테고리, <em>다른 신호</em></h2>
+            </div>
+            <p>제품명 · 사진 · 브랜드 · 판매처 · 환산가격 · 리뷰/별점을 한 화면에 맞춥니다.</p>
+          </div>
+
+          <div id="category-tabs" class="category-tabs" role="tablist" aria-label="세부 카테고리"></div>
+          <div id="comparison-grid" class="comparison-grid"></div>
+        </section>
+
+        <section class="top-five-section">
+          <div class="section-heading inverse">
+            <div>
+              <p class="kicker">02 · ADVERTISER OPPORTUNITY</p>
+              <h2>일본 진출 제안용 <em>TOP 5</em></h2>
+            </div>
+            <p>한국 랭킹의 신호를 가격·성분·사용감·뉴스 근거까지 묶어 광고 제안 우선순위로 정리합니다.</p>
+          </div>
+
+          <div class="threshold-control">
+            <div>
+              <span>BUY SIGNAL RULE</span>
+              <b>한국 판매가가 정가 대비 <output id="threshold-output">20%</output> 이상 할인</b>
+            </div>
+            <label>
+              할인 기준
+              <input id="discount-threshold" type="range" min="5" max="40" step="5" value="20" />
+            </label>
+          </div>
+
+          <div id="top-five-list" class="top-five-list"></div>
+        </section>
+
+        <section class="method-section">
+          <div>
+            <p class="kicker">03 · SOURCE & METHOD</p>
+            <h2>근거가 보이는 분석</h2>
+          </div>
+          <ol id="method-list"></ol>
+          <div class="source-links">
+            <a id="cosme-source-link" href="#" target="_blank" rel="noopener noreferrer">@cosme 원본 ↗</a>
+            <a id="oliveyoung-source-link" href="#" target="_blank" rel="noopener noreferrer">Olive Young 원본 ↗</a>
+            <small id="collected-at">수집 시각 —</small>
+          </div>
+        </section>
+
+        <section class="coming-soon">
+          <span class="soon-number">04</span>
+          <div>
+            <p class="kicker">CONTENT PRODUCTION</p>
+            <h2>카드뉴스 제작</h2>
+            <p>현재는 분석과 소재 선별에 집중합니다. 6장 구성·이미지 편집·인스타그램 출력 기능은 다음 단계에서 연결합니다.</p>
+          </div>
+          <strong>COMING<br />SOON</strong>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <b>CHECKNAVI · K-BEAUTY MARKET INTELLIGENCE</b>
+      <p>랭킹은 각 플랫폼 공개 페이지의 최신 노출을 기준으로 하며 판매량 자체를 의미하지 않습니다.</p>
+    </footer>
+  </body>
+</html>

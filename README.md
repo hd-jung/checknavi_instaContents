@@ -3,6 +3,7 @@
 한국과 일본의 K-뷰티 시장 신호를 비교해 뉴스, 제품 분석, 카드뉴스, 릴스와 유튜브 콘텐츠 초안으로 연결하는 FastAPI 기반 운영 워크스페이스입니다.
 
 - `/`: 기존 @cosme 주간 랭킹·인스타그램 썸네일 페이지
+- `/trend-gap`: @cosme와 Olive Young을 비교하는 일본 진출 기회 TOP 5 분석
 - `/releases`: 표지 1장과 신제품 5장으로 구성된 인스타그램 카드뉴스 제작기
 - `/workspace`: 분석형 인플루언서 운영 워크스페이스
 
@@ -15,6 +16,7 @@
 - `CONTENT STUDIO`: 일본어 제목·후킹·구성과 4:5·9:16·16:9 이미지 출력
 - `CAMPAIGN`: 광고 제안, 제작물, 마감일과 진행 상태 관리
 - `NEW DROP STUDIO`: @cosme 신제품 캘린더, 상품 정보와 환율을 결합해 1080×1350 PNG 6장 생성
+- `TREND GAP DESK`: 일본 현재 인기와 한국 다음 후보의 가격·리뷰·성분·효능 비교 및 광고 기회 TOP 5
 
 뉴스와 캠페인, 올리브영 CSV 데이터는 현재 사용 중인 브라우저에만 저장됩니다.
 
@@ -52,6 +54,7 @@ python -m pip install -r requirements-dev.txt
 - 서버 캐시: 랭킹 15분, 환율 30분
 - 화면 자동 갱신: 60초. `새로고침` 버튼은 서버 캐시를 우회합니다.
 - 올리브영: 공식 웹사이트의 자동 접속 제한을 고려해 현재 CSV 불러오기 방식 사용
+- Trend Gap의 올리브영 데이터: 실시간 서버 수집을 우선하되 Cloudflare 차단 시 공식 상품 페이지로 검증한 최근 스냅샷을 사용하고 화면에 상태 표시
 - 이미지: 프로젝트에 포함된 가상 K-뷰티 뮤즈를 사용하며, 브라우저에서 권한을 보유한 인물 사진으로 교체 가능
 - 내보내기: 인스타그램 4:5, 릴스 9:16, 유튜브 16:9 PNG 생성
 
@@ -63,6 +66,8 @@ python -m pip install -r requirements-dev.txt
 - `GET /api/dashboard?refresh=true`: 외부 소스를 강제 재수집
 - `GET /api/new-releases`: 한국 브랜드 신제품 5개와 원·엔 환산 가격
 - `GET /api/new-releases?refresh=true`: 신제품 캘린더와 상품 정보를 강제 재수집
+- `GET /api/trend-gap`: 한·일 카테고리 비교, 환율 가격 분석과 광고 기회 TOP 5
+- `GET /api/trend-gap?refresh=true`: @cosme와 환율을 강제 재수집
 - `GET /api/media?url=...`: 썸네일 생성을 위한 @cosme 상품 이미지 프록시
 - `GET /health`: 서버 상태
 - `GET /docs`: FastAPI 자동 API 문서

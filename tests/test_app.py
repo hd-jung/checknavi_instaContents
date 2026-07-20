@@ -40,6 +40,30 @@ def test_release_studio_keeps_existing_pages_and_adds_six_card_workflow():
     assert client.get("/static/releases.js").status_code == 200
 
 
+def test_trend_gap_is_a_separate_analysis_page_with_card_news_coming_soon():
+    response = client.get("/trend-gap")
+
+    assert response.status_code == 200
+    assert 'href="/static/trend-gap.css"' in response.text
+    assert 'src="/static/trend-gap.js"' in response.text
+    assert "일본의 현재와" in response.text
+    assert "TOP 5" in response.text
+    assert "COMING" in response.text
+    assert client.get("/static/trend-gap.js").status_code == 200
+
+
+def test_trend_gap_api_returns_five_comparisons_and_honest_source_state():
+    response = client.get("/api/trend-gap")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["comparisons"]) == 5
+    assert len(data["top5"]) == 5
+    assert data["sources"]["korea"]["mode"] == "reference_snapshot"
+    assert data["top5"][0]["price_analysis"]["default_threshold"] == 20
+    assert all("reviews_status" in row["korea"] for row in data["comparisons"])
+
+
 def test_vercel_dashboard_uses_public_root(monkeypatch):
     monkeypatch.setenv("VERCEL", "1")
 
@@ -56,6 +80,10 @@ def test_vercel_dashboard_uses_public_root(monkeypatch):
     assert releases.status_code == 200
     assert 'href="/releases.css"' in releases.text
     assert 'src="/releases.js"' in releases.text
+    trend_gap = client.get("/trend-gap")
+    assert trend_gap.status_code == 200
+    assert 'href="/trend-gap.css"' in trend_gap.text
+    assert 'src="/trend-gap.js"' in trend_gap.text
 
 
 def test_weekly_service_falls_back_when_cosme_is_unavailable(monkeypatch):
