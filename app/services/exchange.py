@@ -12,6 +12,8 @@ from app.models import ExchangeRate
 
 SEOUL = ZoneInfo("Asia/Seoul")
 SOURCE_URL = "https://api.frankfurter.dev/v2/rate/KRW/JPY"
+FALLBACK_RATE_PER_100_KRW = 10.941
+FALLBACK_RATE_DATE = "2026-07-20"
 
 
 class ExchangeRateService:
@@ -50,9 +52,10 @@ class ExchangeRateService:
                     self._cached.cache_hit = True
                     return self._cached
                 return ExchangeRate(
-                    rate_per_100_krw=None,
-                    as_of_date=None,
+                    rate_per_100_krw=FALLBACK_RATE_PER_100_KRW,
+                    as_of_date=FALLBACK_RATE_DATE,
                     collected_at=datetime.now(SEOUL).isoformat(timespec="seconds"),
                     source_url=SOURCE_URL,
-                    error=f"환율 정보를 불러오지 못했습니다: {type(exc).__name__}",
+                    cache_hit=True,
+                    error=f"실시간 환율 연결 실패로 마지막 정상 환율을 사용합니다: {type(exc).__name__}",
                 )

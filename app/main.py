@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -15,6 +16,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.models import ExchangeRate
 from app.services.exchange import ExchangeRateService
+from app.services.releases import ReleaseService
 from app.services.weekly import WeeklyRankingService, WeeklySnapshot
 
 
@@ -24,6 +26,7 @@ PUBLIC_DIR = PROJECT_DIR / "public"
 SEOUL = ZoneInfo("Asia/Seoul")
 weekly_service = WeeklyRankingService()
 exchange_service = ExchangeRateService()
+release_service = ReleaseService()
 
 
 @asynccontextmanager
@@ -113,6 +116,47 @@ async def intelligence_workspace(request: Request):
         context={
             "page_title": "Checknavi Beauty Intelligence",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/releases", response_class=HTMLResponse)
+async def release_card_studio(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="releases.html",
+        context={
+            "page_title": "K-Beauty New Drop Studio",
+            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
+        },
+    )
+
+
+@app.get("/api/new-releases")
+async def new_release_data(refresh: bool = Query(False)):
+    snapshot, exchange = await asyncio.gather(
+        release_service.get_snapshot(force=refresh),
+        exchange_service.get_rate(force=refresh),
+    )
+    source_mode = "fallback" if snapshot.fallback else ("cached" if snapshot.cache_hit else "live")
+    return JSONResponse(
+        content={
+            "status": "ok",
+            "source_mode": source_mode,
+            "collected_at": snapshot.collected_at,
+            "source_url": snapshot.source_url,
+            "exchange": {
+                "rate_per_100_krw": exchange.rate_per_100_krw,
+                "as_of_date": exchange.as_of_date,
+            },
+            "products": [
+                product.to_dict(exchange.rate_per_100_krw)
+                for product in snapshot.products[:5]
+            ],
+        },
+        headers={
+            "Cache-Control": "no-store" if refresh else "public, max-age=60",
+            "Vercel-CDN-Cache-Control": "no-store" if refresh else "public, s-maxage=1800",
         },
     )
 

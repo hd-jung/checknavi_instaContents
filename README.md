@@ -3,6 +3,7 @@
 한국과 일본의 K-뷰티 시장 신호를 비교해 뉴스, 제품 분석, 카드뉴스, 릴스와 유튜브 콘텐츠 초안으로 연결하는 FastAPI 기반 운영 워크스페이스입니다.
 
 - `/`: 기존 @cosme 주간 랭킹·인스타그램 썸네일 페이지
+- `/releases`: 표지 1장과 신제품 5장으로 구성된 인스타그램 카드뉴스 제작기
 - `/workspace`: 분석형 인플루언서 운영 워크스페이스
 
 ## 주요 기능
@@ -13,6 +14,7 @@
 - `PRODUCT LAB`: 가격·성분·성능 분석 초안
 - `CONTENT STUDIO`: 일본어 제목·후킹·구성과 4:5·9:16·16:9 이미지 출력
 - `CAMPAIGN`: 광고 제안, 제작물, 마감일과 진행 상태 관리
+- `NEW DROP STUDIO`: @cosme 신제품 캘린더, 상품 정보와 환율을 결합해 1080×1350 PNG 6장 생성
 
 뉴스와 캠페인, 올리브영 CSV 데이터는 현재 사용 중인 브라우저에만 저장됩니다.
 
@@ -45,6 +47,7 @@ python -m pip install -r requirements-dev.txt
 ## 데이터 기준
 
 - 랭킹: [@cosme 한국 코스메 최신 리뷰 랭킹](https://www.cosme.net/categories/pickup/1039/ranking/)
+- 신제품: [@cosme 신제품 캘린더](https://www.cosme.net/calendar/)에서 한국 브랜드를 선별하고 상품 상세 정보 결합
 - 환율: [Frankfurter API](https://frankfurter.dev/)의 KRW/JPY 중앙은행 일일 기준환율
 - 서버 캐시: 랭킹 15분, 환율 30분
 - 화면 자동 갱신: 60초. `새로고침` 버튼은 서버 캐시를 우회합니다.
@@ -58,6 +61,8 @@ python -m pip install -r requirements-dev.txt
 
 - `GET /api/dashboard`: 주간 5개 카테고리 픽과 시장 요약
 - `GET /api/dashboard?refresh=true`: 외부 소스를 강제 재수집
+- `GET /api/new-releases`: 한국 브랜드 신제품 5개와 원·엔 환산 가격
+- `GET /api/new-releases?refresh=true`: 신제품 캘린더와 상품 정보를 강제 재수집
 - `GET /api/media?url=...`: 썸네일 생성을 위한 @cosme 상품 이미지 프록시
 - `GET /health`: 서버 상태
 - `GET /docs`: FastAPI 자동 API 문서

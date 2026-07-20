@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="@cosme 신제품과 환율 정보를 이용해 인스타그램용 K-뷰티 신상 카드뉴스 6장을 만드는 제작 도구"
+    />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ asset_prefix }}/releases.css" />
+    <script defer src="{{ asset_prefix }}/releases.js"></script>
+  </head>
+  <body>
+    <header class="release-header">
+      <a class="release-brand" href="/releases">
+        <span class="brand-tile">N</span>
+        <span><b>NEW DROP STUDIO</b><small>CHECKNAVI · K-BEAUTY</small></span>
+      </a>
+      <nav aria-label="기존 화면 이동">
+        <a href="/">WEEKLY PICKS</a>
+        <a href="/workspace">INTELLIGENCE</a>
+      </nav>
+      <div class="header-actions">
+        <span id="source-badge" class="source-badge">데이터 연결 중</span>
+        <button id="refresh-releases" class="button secondary" type="button">실시간 갱신</button>
+        <button id="export-all" class="button primary" type="button" disabled>PNG 6장 저장</button>
+      </div>
+    </header>
+
+    <main class="release-layout">
+      <aside class="editor-panel">
+        <div class="editor-heading">
+          <span>EDITOR</span>
+          <strong id="editor-title">01 · 표지</strong>
+        </div>
+
+        <div class="slide-tabs" id="slide-tabs" aria-label="편집할 카드 선택"></div>
+
+        <section id="cover-editor" class="editor-section">
+          <label>표지 제목
+            <textarea id="cover-title" rows="3">일본에 지금 막 도착한&#10;K-BEAUTY 신상 5</textarea>
+          </label>
+          <label>표지 부제
+            <input id="cover-subtitle" type="text" value="가격·판매처·첫 리뷰까지 한 번에" />
+          </label>
+          <label>에디션
+            <input id="cover-edition" type="text" value="JULY NEW DROP" />
+          </label>
+        </section>
+
+        <section id="product-editor" class="editor-section" hidden>
+          <div class="field-grid">
+            <label>브랜드<input id="edit-brand" type="text" /></label>
+            <label>출시일<input id="edit-release-date" type="date" /></label>
+          </div>
+          <label>화장품 이름<textarea id="edit-name" rows="3"></textarea></label>
+          <label>카테고리<input id="edit-category" type="text" /></label>
+          <label>판매처<input id="edit-seller" type="text" /></label>
+          <div class="field-grid">
+            <label>일본 가격(¥)<input id="edit-price" type="number" min="0" step="1" /></label>
+            <label>환산 원화<input id="converted-price" type="text" readonly /></label>
+          </div>
+          <div class="field-grid">
+            <label>별점<input id="edit-rating" type="number" min="0" max="7" step="0.1" /></label>
+            <label>리뷰수<input id="edit-reviews" type="number" min="0" step="1" /></label>
+          </div>
+          <div class="upload-grid">
+            <label class="upload-button">상품 사진 교체<input id="product-image-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden /></label>
+            <label class="upload-button">브랜드 로고 교체<input id="brand-logo-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden /></label>
+          </div>
+          <a id="product-source" class="source-link" href="#" target="_blank" rel="noopener noreferrer">원본 상품 페이지 ↗</a>
+        </section>
+
+        <div class="editor-note">
+          <b>자동 수집 + 직접 수정</b>
+          <p>신제품은 리뷰가 아직 없을 수 있습니다. 사진과 로고는 사용 권한이 있는 파일로 교체한 뒤 게시하세요.</p>
+        </div>
+        <button id="export-current" class="button primary full" type="button" disabled>선택 카드 PNG 저장</button>
+      </aside>
+
+      <section class="stage">
+        <div class="stage-intro">
+          <div>
+            <p>INSTAGRAM CAROUSEL · 1080 × 1350</p>
+            <h1>신상 발매 카드뉴스 <em>6 CUTS</em></h1>
+          </div>
+          <div class="data-summary">
+            <span>₩100</span>
+            <b id="rate-value">—</b>
+            <small id="rate-date">환율 확인 중</small>
+          </div>
+        </div>
+
+        <div id="loading-releases" class="loading-card">한국 브랜드 신제품과 상품 정보를 불러오는 중입니다.</div>
+        <div id="release-error" class="error-card" hidden>
+          <b>신제품 데이터를 불러오지 못했습니다.</b>
+          <p id="release-error-message">잠시 후 다시 시도해 주세요.</p>
+        </div>
+        <div id="card-grid" class="card-grid" aria-live="polite"></div>
+
+        <div class="stage-footer">
+          <p id="collection-note">수집 시각 —</p>
+          <a id="calendar-source" href="https://www.cosme.net/calendar/" target="_blank" rel="noopener noreferrer">@cosme 신제품 캘린더 ↗</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
