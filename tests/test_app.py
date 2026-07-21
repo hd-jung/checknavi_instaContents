@@ -24,7 +24,8 @@ def test_rankings_page_has_one_focused_comparison_stage():
     response = client.get("/rankings")
 
     assert response.status_code == 200
-    assert "한·일 랭킹 비교" in response.text
+    assert "한·일 랭킹" in response.text
+    assert "모든 제품에 표시되는 6개 필드" in response.text
     assert 'id="comparison-stage"' not in response.text
     assert 'class="comparison-stage"' in response.text
     assert 'src="/static/rankings.js"' in response.text
@@ -67,9 +68,20 @@ def test_trend_gap_api_returns_five_comparisons_and_honest_source_state():
     data = response.json()
     assert len(data["comparisons"]) == 5
     assert len(data["top5"]) == 5
-    assert data["sources"]["korea"]["mode"] == "reference_snapshot"
+    assert data["sources"]["korea"]["mode"] == "fallback"
+    assert data["sources"]["korea"]["name"] == "화해 카테고리별 랭킹"
     assert data["top5"][0]["price_analysis"]["default_threshold"] == 20
-    assert all("reviews_status" in row["korea"] for row in data["comparisons"])
+    assert data["top5"][0]["price_analysis"]["threshold_market"] == "japan"
+    assert data["top5"][0]["price_analysis"]["buy_signal"] is None
+    assert all(all(field["available"] for field in row["korea"]["required_fields"].values()) for row in data["comparisons"])
+
+
+def test_brand_wordmark_is_served_as_svg():
+    response = client.get("/api/brand-wordmark", params={"name": "토리든"})
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("image/svg+xml")
+    assert "토리든" in response.text
 
 
 def test_trend_gap_default_load_does_not_wait_for_cosme(monkeypatch):

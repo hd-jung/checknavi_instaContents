@@ -4,6 +4,7 @@ import asyncio
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime
+from html import escape
 from pathlib import Path
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
@@ -14,7 +15,6 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.data.fallback_intelligence import KOREA_REFERENCE_PICKS
 from app.models import ExchangeRate
 from app.services.exchange import (
     FALLBACK_RATE_DATE,
@@ -23,6 +23,11 @@ from app.services.exchange import (
     ExchangeRateService,
 )
 from app.services.intelligence import build_market_intelligence
+from app.services.hwahae import (
+    CATEGORY_SPECS,
+    HwahaeRankingService,
+    fallback_hwahae_snapshot,
+)
 from app.services.releases import ReleaseService
 from app.services.weekly import (
     WeeklyRankingService,
@@ -36,6 +41,7 @@ PROJECT_DIR = BASE_DIR.parent
 PUBLIC_DIR = PROJECT_DIR / "public"
 SEOUL = ZoneInfo("Asia/Seoul")
 weekly_service = WeeklyRankingService()
+hwahae_service = HwahaeRankingService()
 exchange_service = ExchangeRateService()
 release_service = ReleaseService()
 
@@ -56,7 +62,7 @@ app = FastAPI(
 if not os.getenv("VERCEL"):
     app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
-VALID_PRODUCT_IDS = {item["category_key"] for item in KOREA_REFERENCE_PICKS}
+VALID_PRODUCT_IDS = {item["key"] for item in CATEGORY_SPECS}
 TREND_REFRESH_TIMEOUT_SECONDS = 25.0
 
 
@@ -203,6 +209,7 @@ async def trend_gap_data(refresh: bool = Query(False)):
     # The regular page load uses a verified snapshot and a short FX lookup;
     # explicit refresh is the only path that attempts a live @cosme crawl.
     snapshot = fallback_weekly_snapshot()
+    korea_snapshot = fallback_hwahae_snapshot()
     exchange = ExchangeRate(
         rate_per_100_krw=FALLBACK_RATE_PER_100_KRW,
         as_of_date=FALLBACK_RATE_DATE,
@@ -213,9 +220,10 @@ async def trend_gap_data(refresh: bool = Query(False)):
     )
     try:
         if refresh:
-            snapshot, exchange = await asyncio.wait_for(
+            snapshot, korea_snapshot, exchange = await asyncio.wait_for(
                 asyncio.gather(
                     weekly_service.get_snapshot(force=True),
+                    hwahae_service.get_snapshot(force=True),
                     exchange_service.get_rate(force=True),
                 ),
                 timeout=TREND_REFRESH_TIMEOUT_SECONDS,
@@ -230,7 +238,7 @@ async def trend_gap_data(refresh: bool = Query(False)):
             f"외부 데이터 연결 지연으로 검증 스냅샷을 사용합니다: {type(exc).__name__}"
         )
     return JSONResponse(
-        content=build_market_intelligence(snapshot, exchange),
+        content=build_market_intelligence(snapshot, korea_snapshot, exchange),
         headers={
             "Cache-Control": "no-store" if refresh else "public, max-age=60",
             "Vercel-CDN-Cache-Control": (
@@ -239,6 +247,22 @@ async def trend_gap_data(refresh: bool = Query(False)):
                 else "public, s-maxage=900, stale-while-revalidate=60"
             ),
         },
+    )
+
+
+@app.get("/api/brand-wordmark")
+async def brand_wordmark(name: str = Query(..., min_length=1, max_length=40)):
+    """Render a neutral wordmark when ranking sources do not expose logo artwork."""
+    safe_name = escape(name.strip())
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="320" height="96" viewBox="0 0 320 96">
+<rect width="320" height="96" rx="4" fill="#fffef9"/>
+<rect x="1" y="1" width="318" height="94" rx="3" fill="none" stroke="#181916" stroke-width="2"/>
+<text x="160" y="56" text-anchor="middle" fill="#181916" font-family="Arial, sans-serif" font-size="24" font-weight="700">{safe_name}</text>
+</svg>"""
+    return Response(
+        content=svg,
+        media_type="image/svg+xml",
+        headers={"Cache-Control": "public, max-age=86400"},
     )
 
 

@@ -5,30 +5,46 @@
 
 {% block content %}
   <section class="page-heading slim-heading">
-    <div><p class="eyebrow">CATEGORY COMPARISON</p><h1>한·일 랭킹 비교</h1></div>
+    <div>
+      <p class="eyebrow">LIVE CATEGORY COMPARISON</p>
+      <h1>한·일 랭킹<br>필드 비교</h1>
+    </div>
     <div class="heading-actions">
-      <span id="ranking-source-state">데이터 확인 중</span>
-      <button id="refresh-ranking" type="button">@cosme 최신 조회</button>
+      <span id="ranking-source-state">최근 정상 데이터를 확인하고 있습니다.</span>
+      <button id="refresh-ranking" type="button">양국 최신 데이터 조회</button>
+      <small>버튼을 누른 시점에 @cosme · 화해 · 환율을 다시 수집합니다.</small>
     </div>
   </section>
 
   <section class="data-notice">
-    <div><span>일본</span><b>@cosme 최신 조회 가능</b><small id="japan-date">갱신일 —</small></div>
-    <div><span>한국</span><b>Olive Young 검증 스냅샷</b><small id="korea-date">갱신일 —</small></div>
-    <p>동일 제품의 국가별 순위가 아니라, 같은 카테고리의 대표 제품을 비교합니다.</p>
+    <div><span>JAPAN</span><b>@cosme 주간 랭킹</b><small id="japan-date">갱신일 확인 중</small></div>
+    <div><span>KOREA</span><b>화해 세부 카테고리 랭킹</b><small id="korea-date">갱신일 확인 중</small></div>
+    <p id="source-explanation">같은 세부 카테고리의 일본 상위 제품과 한국 1위 제품을 비교합니다. 올리브영 국내 랭킹은 서버 접근이 차단되어 화해 공식 랭킹을 사용합니다.</p>
+  </section>
+
+  <section class="required-field-guide" aria-label="필수 표시 항목">
+    <b>모든 제품에 표시되는 6개 필드</b>
+    <ol>
+      <li>상품명</li><li>상품 사진</li><li>브랜드 로고</li><li>판매처</li><li>환율 적용 가격</li><li>리뷰 수 + 별점</li>
+    </ol>
   </section>
 
   <div id="ranking-error" class="inline-error" hidden></div>
   <section id="ranking-content" hidden>
-    <div id="category-tabs" class="category-nav" role="tablist" aria-label="카테고리"></div>
+    <div id="category-tabs" class="category-nav" role="tablist" aria-label="세부 카테고리"></div>
+    <p id="category-path" class="category-path"></p>
     <article class="comparison-stage">
       <section id="japan-product" class="country-product"></section>
       <section id="gap-summary" class="gap-summary"></section>
       <section id="korea-product" class="country-product"></section>
     </article>
+    <section class="methodology-box">
+      <h2>비교 기준과 한계</h2>
+      <ul id="methodology-list"></ul>
+    </section>
     <div class="ranking-next">
-      <p>이 비교를 광고 제안 후보로 정리했습니다.</p>
-      <a href="/opportunities">광고 후보 TOP 5 보기 →</a>
+      <p>위 5개 한국 카테고리 1위 제품을 광고 제안 검토 순서로 정리했습니다.</p>
+      <a href="/opportunities">랭킹 화장품 TOP 5 보기 →</a>
     </div>
   </section>
 {% endblock %}
