@@ -1,10 +1,14 @@
 from fastapi.testclient import TestClient
 
-from app.main import app, weekly_service
+from app.main import TREND_REFRESH_TIMEOUT_SECONDS, app, weekly_service
 from app.services.weekly import WeeklyRankingService
 
 
 client = TestClient(app)
+
+
+def test_trend_gap_live_refresh_allows_slow_cosme_collection():
+    assert TREND_REFRESH_TIMEOUT_SECONDS == 25.0
 
 
 def test_local_dashboard_uses_mounted_static_assets():

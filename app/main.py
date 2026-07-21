@@ -57,6 +57,7 @@ if not os.getenv("VERCEL"):
     app.mount("/static", StaticFiles(directory=PUBLIC_DIR), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 VALID_PRODUCT_IDS = {item["category_key"] for item in KOREA_REFERENCE_PICKS}
+TREND_REFRESH_TIMEOUT_SECONDS = 25.0
 
 
 def build_dashboard(snapshot: WeeklySnapshot, exchange: ExchangeRate) -> dict:
@@ -216,7 +217,7 @@ async def trend_gap_data(refresh: bool = Query(False)):
                     weekly_service.get_snapshot(force=True),
                     exchange_service.get_rate(force=True),
                 ),
-                timeout=9.0,
+                timeout=TREND_REFRESH_TIMEOUT_SECONDS,
             )
         else:
             exchange = await asyncio.wait_for(
