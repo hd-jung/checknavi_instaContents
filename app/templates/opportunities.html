@@ -1,75 +1,28 @@
-<!doctype html>
-<html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="일본 진출 광고 제안용 K-뷰티 제품 TOP 5" />
-    <title>{{ page_title }}</title>
-    <link rel="stylesheet" href="{{ asset_prefix }}/trend-gap.css" />
-    <script defer src="{{ asset_prefix }}/opportunities.js"></script>
-  </head>
-  <body data-page="opportunities">
-    <header class="site-header">
-      <a class="wordmark" href="/trend-gap">
-        <span>CHECKNAVI</span><b>MARKET INTELLIGENCE</b>
-      </a>
-      <nav aria-label="분석 페이지 이동">
-        <a href="/trend-gap">랭킹 비교</a>
-        <a class="active" href="/opportunities">광고 후보 TOP 5</a>
-        <a href="/content-studio">카드뉴스</a>
-      </nav>
-      <div class="header-tools">
-        <span id="header-clock">--:--:-- KST</span>
-        <button id="refresh-button" type="button">데이터 갱신 ↻</button>
-      </div>
-    </header>
+{% extends "app-base.html" %}
 
-    <main>
-      <section class="route-hero opportunity-hero">
-        <div>
-          <p class="kicker">PAGE 02 · ADVERTISER OPPORTUNITY</p>
-          <h1>광고 제안 후보<br /><em>TOP 5</em></h1>
-        </div>
-        <div class="route-intro">
-          <b>이 페이지에서 보는 것</b>
-          <p>한·일 카테고리 차이, 한국 판매 할인율, 제품 신규성을 묶어 한국 브랜드에 제안할 우선순위를 보여줍니다.</p>
-          <a href="/trend-gap">← 랭킹 비교로 돌아가기</a>
-        </div>
-      </section>
+{% block topbar_title %}광고 후보 TOP 5{% endblock %}
+{% block scripts %}<script defer src="{{ asset_prefix }}/opportunities.js"></script>{% endblock %}
 
-      <section class="opportunity-summary">
-        <article><span>후보 제품</span><b id="candidate-count">—</b><small>한국 제품</small></article>
-        <article><span>평균 기회점수</span><b id="opportunity-average">—</b><small>편집 우선순위</small></article>
-        <article><span>한국 신규 주목</span><b id="new-wave-count">—</b><small>제품 수</small></article>
-        <article class="fx-summary"><span>₩100</span><b id="fx-rate">—</b><small id="fx-date">환율 확인 중</small></article>
-      </section>
+{% block content %}
+  <section class="page-heading slim-heading">
+    <div><p class="eyebrow">ADVERTISER SHORTLIST</p><h1>광고 후보 TOP 5</h1></div>
+    <div class="heading-copy small-copy"><b>매출 예측이 아닙니다.</b><p>한국 브랜드에 일본 시장 광고를 제안할 때 먼저 검토할 편집 우선순위입니다.</p></div>
+  </section>
 
-      <div id="loading-state" class="state-panel inverse-state">
-        <span class="loading-bar"></span><b>광고 후보를 정렬하고 있습니다.</b>
-      </div>
-      <div id="error-state" class="state-panel error" hidden>
-        <b>데이터를 불러오지 못했습니다.</b>
-        <p id="error-message">잠시 후 다시 시도해 주세요.</p>
-        <button id="retry-button" type="button">다시 시도</button>
-      </div>
+  <section class="snapshot-warning">
+    <b>데이터 기준</b>
+    <p id="snapshot-copy">Olive Young 스냅샷과 @cosme 데이터를 불러오고 있습니다.</p>
+    <a href="/rankings">랭킹 근거 확인 →</a>
+  </section>
 
-      <section id="opportunity-content" class="opportunity-page" hidden>
-        <div class="threshold-control light-control">
-          <div>
-            <span>BUY SIGNAL RULE</span>
-            <b>한국 정가 대비 <output id="threshold-output">20%</output> 이상 할인일 때 구매 신호</b>
-          </div>
-          <label>할인 기준
-            <input id="discount-threshold" type="range" min="5" max="40" step="5" value="20" />
-          </label>
-        </div>
-        <div id="opportunity-list" class="opportunity-list"></div>
-      </section>
-    </main>
-
-    <footer>
-      <b>CHECKNAVI · PAGE 02 / 04</b>
-      <p>기회점수는 매출 예측이 아니라 광고 제안과 콘텐츠 제작의 우선순위입니다.</p>
-    </footer>
-  </body>
-</html>
+  <div id="opportunity-error" class="inline-error" hidden></div>
+  <section id="opportunity-content" hidden>
+    <div class="top5-summary">
+      <div><span>후보</span><b id="candidate-count">—</b><small>제품</small></div>
+      <div><span>평균 우선순위</span><b id="average-score">—</b><small>/ 100</small></div>
+      <div><span>신규 주목</span><b id="new-count">—</b><small>제품</small></div>
+      <div><span>환율</span><b id="top5-fx">—</b><small>JPY / ₩100</small></div>
+    </div>
+    <div id="opportunity-list" class="shortlist"></div>
+  </section>
+{% endblock %}

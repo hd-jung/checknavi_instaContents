@@ -1,0 +1,34 @@
+{% extends "app-base.html" %}
+
+{% block topbar_title %}한·일 랭킹{% endblock %}
+{% block scripts %}<script defer src="{{ asset_prefix }}/rankings.js"></script>{% endblock %}
+
+{% block content %}
+  <section class="page-heading slim-heading">
+    <div><p class="eyebrow">CATEGORY COMPARISON</p><h1>한·일 랭킹 비교</h1></div>
+    <div class="heading-actions">
+      <span id="ranking-source-state">데이터 확인 중</span>
+      <button id="refresh-ranking" type="button">@cosme 최신 조회</button>
+    </div>
+  </section>
+
+  <section class="data-notice">
+    <div><span>일본</span><b>@cosme 최신 조회 가능</b><small id="japan-date">갱신일 —</small></div>
+    <div><span>한국</span><b>Olive Young 검증 스냅샷</b><small id="korea-date">갱신일 —</small></div>
+    <p>동일 제품의 국가별 순위가 아니라, 같은 카테고리의 대표 제품을 비교합니다.</p>
+  </section>
+
+  <div id="ranking-error" class="inline-error" hidden></div>
+  <section id="ranking-content" hidden>
+    <div id="category-tabs" class="category-nav" role="tablist" aria-label="카테고리"></div>
+    <article class="comparison-stage">
+      <section id="japan-product" class="country-product"></section>
+      <section id="gap-summary" class="gap-summary"></section>
+      <section id="korea-product" class="country-product"></section>
+    </article>
+    <div class="ranking-next">
+      <p>이 비교를 광고 제안 후보로 정리했습니다.</p>
+      <a href="/opportunities">광고 후보 TOP 5 보기 →</a>
+    </div>
+  </section>
+{% endblock %}

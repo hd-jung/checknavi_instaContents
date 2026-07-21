@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="한국 화장품 브랜드의 일본 시장 광고 제안을 위한 Checknavi 분석 도구" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ asset_prefix }}/checknavi.css" />
+    <script defer src="{{ asset_prefix }}/data-ui.js"></script>
+    <script defer src="{{ asset_prefix }}/shell.js"></script>
+    {% block scripts %}{% endblock %}
+  </head>
+  <body data-page="{{ active_page }}" {% block body_attrs %}{% endblock %}>
+    <div class="app-shell">
+      <aside class="app-sidebar">
+        <a class="app-logo" href="/">
+          <span>C</span>
+          <div><b>CHECKNAVI</b><small>JAPAN MARKET DESK</small></div>
+        </a>
+
+        <nav class="app-menu" aria-label="주요 메뉴">
+          <a class="{% if active_page == 'overview' %}active{% endif %}" href="/"><span>01</span><b>시장 현황</b><small>데이터와 오늘의 신호</small></a>
+          <a class="{% if active_page == 'rankings' %}active{% endif %}" href="/rankings"><span>02</span><b>한·일 랭킹</b><small>카테고리별 비교</small></a>
+          <a class="{% if active_page == 'opportunities' %}active{% endif %}" href="/opportunities"><span>03</span><b>광고 후보 TOP 5</b><small>제안 우선순위와 상세</small></a>
+          <a class="{% if active_page == 'content' %}active{% endif %}" href="/content"><span>04</span><b>카드뉴스</b><small>준비 중</small></a>
+        </nav>
+
+        <div class="sidebar-note">
+          <span class="status-dot"></span>
+          <div><b>분석 시스템</b><small id="sidebar-clock">--:-- KST</small></div>
+        </div>
+      </aside>
+
+      <div class="app-main">
+        <header class="app-topbar">
+          <button id="mobile-menu" type="button" aria-label="메뉴 열기">MENU</button>
+          <div><span>CHECKNAVI</span><b>{% block topbar_title %}{% endblock %}</b></div>
+          <div class="topbar-meta"><span id="topbar-date">----</span><b>SEOUL</b></div>
+        </header>
+        <main class="page-content">{% block content %}{% endblock %}</main>
+      </div>
+    </div>
+  </body>
+</html>

@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 
 import httpx
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -113,48 +113,41 @@ def build_dashboard(snapshot: WeeklySnapshot, exchange: ExchangeRate) -> dict:
 async def dashboard_page(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
+        name="overview.html",
         context={
-            "page_title": "K-Beauty Pulse",
+            "page_title": "시장 현황 · Checknavi",
+            "active_page": "overview",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },
     )
 
 
-@app.get("/workspace", response_class=HTMLResponse)
-async def intelligence_workspace(request: Request):
+@app.get("/workspace", include_in_schema=False)
+async def legacy_workspace():
+    return RedirectResponse(url="/", status_code=308)
+
+
+@app.get("/releases", include_in_schema=False)
+async def legacy_releases():
+    return RedirectResponse(url="/content", status_code=308)
+
+
+@app.get("/rankings", response_class=HTMLResponse)
+async def rankings_page(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="workspace.html",
+        name="rankings.html",
         context={
-            "page_title": "Checknavi Beauty Intelligence",
+            "page_title": "한·일 랭킹 비교 · Checknavi",
+            "active_page": "rankings",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },
     )
 
 
-@app.get("/releases", response_class=HTMLResponse)
-async def release_card_studio(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="releases.html",
-        context={
-            "page_title": "K-Beauty New Drop Studio",
-            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
-        },
-    )
-
-
-@app.get("/trend-gap", response_class=HTMLResponse)
-async def trend_gap_page(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="trend-gap.html",
-        context={
-            "page_title": "Korea Next / Japan Now · Checknavi",
-            "asset_prefix": "" if os.getenv("VERCEL") else "/static",
-        },
-    )
+@app.get("/trend-gap", include_in_schema=False)
+async def legacy_trend_gap():
+    return RedirectResponse(url="/rankings", status_code=308)
 
 
 @app.get("/opportunities", response_class=HTMLResponse)
@@ -164,6 +157,7 @@ async def opportunity_page(request: Request):
         name="opportunities.html",
         context={
             "page_title": "광고 후보 TOP 5 · Checknavi",
+            "active_page": "opportunities",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },
     )
@@ -179,21 +173,28 @@ async def product_detail_page(request: Request, product_id: str):
         context={
             "page_title": "제품 상세 분석 · Checknavi",
             "product_id": product_id,
+            "active_page": "opportunities",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },
     )
 
 
-@app.get("/content-studio", response_class=HTMLResponse)
-async def content_studio_coming_soon(request: Request):
+@app.get("/content", response_class=HTMLResponse)
+async def content_page(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="content-studio-coming-soon.html",
+        name="content.html",
         context={
             "page_title": "카드뉴스 제작 · Coming Soon",
+            "active_page": "content",
             "asset_prefix": "" if os.getenv("VERCEL") else "/static",
         },
     )
+
+
+@app.get("/content-studio", include_in_schema=False)
+async def legacy_content_studio():
+    return RedirectResponse(url="/content", status_code=308)
 
 
 @app.get("/api/trend-gap")

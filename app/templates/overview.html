@@ -1,0 +1,66 @@
+{% extends "app-base.html" %}
+
+{% block topbar_title %}시장 현황{% endblock %}
+{% block scripts %}<script defer src="{{ asset_prefix }}/overview.js"></script>{% endblock %}
+
+{% block content %}
+  <section class="page-heading overview-heading">
+    <div>
+      <p class="eyebrow">MARKET OVERVIEW</p>
+      <h1>일본 시장에<br /><em>무엇을 제안할까.</em></h1>
+    </div>
+    <div class="heading-copy">
+      <b>한국 화장품 브랜드 광고를 위한 분석 도구</b>
+      <p>@cosme의 일본 인기와 Olive Young의 한국 후보를 비교해 광고 영업에 사용할 근거를 정리합니다.</p>
+    </div>
+  </section>
+
+  <section class="status-grid" aria-label="데이터 상태">
+    <article class="status-card">
+      <div><span>JAPAN SOURCE</span><i id="cosme-mode">확인 중</i></div>
+      <h2>@cosme</h2>
+      <p id="cosme-detail">최근 정상 데이터를 불러오고 있습니다.</p>
+      <button id="refresh-cosme" type="button">@cosme 최신 조회</button>
+    </article>
+    <article class="status-card snapshot-card">
+      <div><span>KOREA SOURCE</span><i>SNAPSHOT</i></div>
+      <h2>Olive Young</h2>
+      <p id="olive-detail">공식 검증 스냅샷을 불러오고 있습니다.</p>
+      <small>실시간 수집 미연결</small>
+    </article>
+    <article class="status-card fx-card">
+      <div><span>EXCHANGE</span><i id="fx-mode">FX</i></div>
+      <h2><small>₩100</small> <b id="fx-rate">—</b></h2>
+      <p id="fx-detail">환율을 불러오고 있습니다.</p>
+    </article>
+  </section>
+
+  <div id="load-error" class="inline-error" hidden></div>
+
+  <section class="decision-section" id="overview-content" hidden>
+    <div class="section-title">
+      <div><span>오늘의 분석 흐름</span><h2>두 단계만 확인하세요.</h2></div>
+      <p>먼저 시장 차이를 보고, 그 결과에서 광고 후보를 선택합니다.</p>
+    </div>
+    <div class="decision-grid">
+      <a class="decision-card" href="/rankings">
+        <span>STEP 01</span><strong>한·일 랭킹 비교</strong>
+        <p>5개 카테고리에서 일본의 현재 인기와 한국의 다음 후보를 비교합니다.</p>
+        <b>비교 시작 →</b>
+      </a>
+      <a class="decision-card accent" href="/opportunities">
+        <span>STEP 02</span><strong>광고 후보 TOP 5</strong>
+        <p>가격·할인·신규성·시장 차이를 근거로 제안 우선순위를 확인합니다.</p>
+        <b>후보 확인 →</b>
+      </a>
+    </div>
+  </section>
+
+  <section class="signal-section" id="signal-section" hidden>
+    <div class="section-title compact-title">
+      <div><span>CATEGORY SIGNALS</span><h2>현재 포착된 차이</h2></div>
+      <small id="collected-at">수집 시각 —</small>
+    </div>
+    <div id="signal-list" class="signal-list"></div>
+  </section>
+{% endblock %}
